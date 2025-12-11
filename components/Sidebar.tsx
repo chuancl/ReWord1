@@ -32,7 +32,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, onS
   return (
     <div className="w-64 bg-slate-900 text-slate-100 h-screen flex flex-col fixed left-0 top-0 overflow-y-auto z-50 shadow-xl">
       <div className="px-6 pt-8 pb-6">
-        <Logo className="w-10 h-10 shadow-lg" />
+        {/* Pass text-white to ensure 'Re' appears white on dark background */}
+        <Logo className="w-10 h-10 shadow-lg" textClassName="text-white" />
       </div>
 
       <nav className="flex-1 px-3 space-y-6">
