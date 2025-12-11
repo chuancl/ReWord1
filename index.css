@@ -14,15 +14,12 @@
 
 /* 扩展自定义样式，用于 Content Script 注入的内容 */
 .context-lingo-word {
-  /* 保留用于简单选择 */
   position: relative;
-  /* Ruby layout requires inline flow to align baselines correctly */
   display: inline; 
   border-radius: 4px;
 }
 
 .context-lingo-wrapper {
-   /* Reset generic styles to avoid page pollution */
    font-variant: normal;
    text-transform: none;
    letter-spacing: normal;
@@ -43,11 +40,31 @@
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* Custom Animation for Floating Ball Halo */
+/* --- Floating Ball Magic Animations --- */
+
+/* Slow Pulse for Halo */
 @keyframes pulse-slow {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.15); }
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
 }
 .animate-pulse-slow {
-  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Slow Spin for Halo Ring */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Float / Levitation Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }

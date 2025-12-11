@@ -24,61 +24,90 @@ export const FloatingBall: React.FC<FloatingBallProps> = ({ config, badgeCount, 
                 if (!isDragging) onClick(e);
             }}
         >
-            <div 
-                className={`relative w-16 h-16 flex items-center justify-center transition-transform duration-300 ease-out ${isDragging ? 'scale-95 cursor-grabbing' : 'hover:scale-110'}`}
-            >
-                {/* --- Layer 1: The Aura / Halo (光圈) --- */}
-                <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 opacity-20 blur-md group-hover:opacity-50 transition-opacity duration-500 animate-pulse-slow pointer-events-none"></div>
-                <div className="absolute -inset-0.5 rounded-full border border-white/40 opacity-60 scale-105 pointer-events-none"></div>
+            {/* Wrapper for Float Animation (only when not dragging) */}
+            <div className={`relative w-16 h-16 flex items-center justify-center transition-transform duration-300 ease-out ${isDragging ? 'scale-90 cursor-grabbing' : 'hover:scale-110 animate-float'}`}>
+                
+                {/* --- Layer 0: Magic Energy Halo (Rotating Outer Ring) --- */}
+                {/* Expanded radius and complex gradient for mystical aura */}
+                <div className="absolute -inset-4 rounded-full opacity-50 blur-lg animate-spin-slow pointer-events-none"
+                     style={{
+                         background: 'conic-gradient(from 0deg, transparent 0%, rgba(59, 130, 246, 0.2) 25%, rgba(168, 85, 247, 0.4) 50%, rgba(59, 130, 246, 0.2) 75%, transparent 100%)'
+                     }}
+                ></div>
+                
+                {/* --- Layer 1: Ambient Glow (Backlight) --- */}
+                <div className="absolute -inset-1 rounded-full bg-indigo-500/30 blur-md group-hover:bg-indigo-500/50 transition-colors duration-500"></div>
 
-                {/* --- Layer 2: The Crystal Body (Glass Orb) --- */}
+                {/* --- Layer 2: The Crystal Sphere (Main Body) --- */}
                 <div 
-                    className="relative w-full h-full rounded-full overflow-hidden backdrop-blur-sm"
+                    className="relative w-full h-full rounded-full overflow-hidden backdrop-blur-[1px] z-10 border border-white/30"
                     style={{
+                        // Ultra-Deep 3D Shadow Stack
                         boxShadow: `
-                            inset -3px -3px 8px rgba(255,255,255,0.2), 
-                            inset 3px 3px 8px rgba(255,255,255,0.9), 
-                            0 6px 16px rgba(0,0,0,0.12),
-                            0 1px 3px rgba(0,0,0,0.05)
+                            inset -12px -12px 24px rgba(17, 24, 39, 0.4),   /* Deep Dark Core Shadow (Bottom Right) */
+                            inset 8px 8px 16px rgba(255, 255, 255, 0.7),    /* Bright Upper Highlight (Top Left) */
+                            inset 0 0 20px rgba(124, 58, 237, 0.2),         /* Inner Magic Glow (Violet Tint) */
+                            0 12px 24px rgba(0, 0, 0, 0.25),                /* Main Drop Shadow (Levitation) */
+                            0 4px 8px rgba(0, 0, 0, 0.1)                    /* Ambient Contact Shadow */
                         `,
-                        background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(240,249,255,0.5) 60%, rgba(220,235,255,0.7) 100%)'
+                        // Glossy Glass Gradient: Transparent center, reflective edges
+                        background: 'radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.1) 30%, rgba(167, 139, 250, 0.1) 60%, rgba(30, 58, 138, 0.2) 100%)'
                     }}
                 >
-                    {/* Top Highlight (Gloss) */}
-                    <div className="absolute top-[8%] left-[15%] w-[50%] h-[25%] bg-gradient-to-b from-white to-transparent opacity-95 rounded-full rotate-[-15deg] blur-[0.5px] pointer-events-none"></div>
+                    {/* 2.1 Hard Specular Highlight (The "Glint") */}
+                    <div className="absolute top-[12%] left-[15%] w-[35%] h-[20%] bg-gradient-to-b from-white to-transparent opacity-90 rounded-full rotate-[-45deg] blur-[1px] pointer-events-none filter brightness-150"></div>
                     
-                    {/* Bottom Caustic Reflection */}
-                    <div className="absolute bottom-0 right-0 w-full h-[50%] bg-gradient-to-t from-blue-200/40 to-transparent opacity-80 rounded-b-full pointer-events-none"></div>
+                    {/* 2.2 Secondary Point Light */}
+                    <div className="absolute top-[20%] left-[10%] w-[6%] h-[6%] bg-white rounded-full blur-[0.5px] pointer-events-none"></div>
 
-                    {/* --- Layer 3: The Center Symbol (The "Fluid W") --- */}
-                    <div className="absolute inset-0 flex items-center justify-center z-10">
-                        {/* 
-                           Custom SVG: "Fluid Flow / W" 
-                           Represents "Word", "Water" (Immersion), and "Wave" (Frequency).
-                        */}
-                        <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transition-all duration-300 drop-shadow-sm ${badgeCount > 0 ? 'text-blue-600' : 'text-slate-400 group-hover:text-blue-500'}`}>
-                            <path 
-                                d="M 15 35 C 15 35, 25 75, 35 75 C 45 75, 50 50, 50 50 C 50 50, 55 75, 65 75 C 75 75, 85 35, 85 35"
-                                stroke="currentColor"
-                                strokeWidth="10"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="opacity-90"
-                            />
-                            {badgeCount > 0 && (
-                                <circle cx="85" cy="25" r="8" fill="#f43f5e" className="animate-ping" style={{ animationDuration: '3s' }} />
-                            )}
-                        </svg>
+                    {/* 2.3 Rim Light / Caustics at Bottom (Refracted Light) */}
+                    <div className="absolute bottom-[5%] right-[10%] w-[70%] h-[35%] bg-gradient-to-t from-cyan-400/40 via-blue-500/20 to-transparent opacity-80 rounded-full blur-[6px] rotate-[-20deg] pointer-events-none mix-blend-overlay"></div>
+
+                    {/* --- Layer 3: The Suspended Core Icon --- */}
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                        {/* Core Icon with SVG Glow Filter */}
+                        <div className="relative transform transition-transform duration-500 group-hover:scale-110 filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]">
+                            <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="core_gradient" x1="0" y1="0" x2="100" y2="100">
+                                        <stop offset="0%" stopColor="#60a5fa" />    {/* Light Blue */}
+                                        <stop offset="50%" stopColor="#3b82f6" />   {/* Blue */}
+                                        <stop offset="100%" stopColor="#7c3aed" />  {/* Violet */}
+                                    </linearGradient>
+                                    {/* Inner Glow Filter for the Icon */}
+                                    <filter id="icon_glow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="2" result="blur"/>
+                                        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                                    </filter>
+                                </defs>
+                                {/* Fluid "W" Shape */}
+                                <path 
+                                    d="M 20 35 C 20 35, 30 85, 45 85 C 60 85, 60 55, 60 55 C 60 55, 65 85, 80 85 C 95 85, 90 35, 90 35"
+                                    stroke="url(#core_gradient)" 
+                                    strokeWidth="14"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="opacity-95"
+                                    filter="url(#icon_glow)"
+                                />
+                                {badgeCount > 0 && (
+                                    <circle cx="85" cy="20" r="8" fill="#f43f5e" className="animate-ping" style={{ animationDuration: '2s' }} />
+                                )}
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
-                {/* --- Layer 4: Notification Badge (Gemstone) --- */}
+                {/* --- Layer 4: Notification Gemstone --- */}
                 {badgeCount > 0 && (
-                    <div className="absolute -top-1 -right-1 z-20">
-                        <div className="relative flex h-5 min-w-[20px] px-1.5 items-center justify-center">
-                            <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-30 animate-ping"></span>
+                    <div className="absolute -top-1 -right-1 z-30 perspective-500">
+                        <div className="relative flex h-6 min-w-[24px] px-1.5 items-center justify-center group/badge">
+                            {/* Magical glow behind badge */}
+                            <span className="absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-50 blur-md animate-pulse"></span>
+                            
                             <span 
-                                className="relative inline-flex rounded-full h-5 min-w-[20px] px-1 bg-gradient-to-br from-red-500 to-pink-600 text-[10px] font-bold text-white items-center justify-center leading-none border border-white shadow-sm"
+                                className="relative inline-flex rounded-full h-5 min-w-[20px] px-1.5 bg-gradient-to-br from-rose-500 via-red-500 to-pink-600 text-[10px] font-extrabold text-white items-center justify-center leading-none border border-white/60 shadow-lg"
+                                style={{ boxShadow: '0 4px 6px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.5)' }}
                             >
                                 {badgeCount > 99 ? '99+' : badgeCount}
                             </span>
