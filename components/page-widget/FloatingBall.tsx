@@ -25,51 +25,62 @@ export const FloatingBall: React.FC<FloatingBallProps> = ({ config, badgeCount, 
                 if (!isDragging) onClick(e);
             }}
         >
-            <div className={`relative w-14 h-14 transition-transform duration-300 ease-out ${isDragging ? 'scale-90 cursor-grabbing' : 'hover:scale-105'}`}>
-                
+            <div 
+                className={`relative w-16 h-16 flex items-center justify-center transition-transform duration-300 ease-out ${isDragging ? 'scale-95 cursor-grabbing' : 'hover:scale-110'}`}
+            >
+                {/* --- Layer 1: The Aura / Halo (光圈) --- */}
                 {/* 
-                   Style: "Crystal Orb with Halo"
-                   Design for visibility on white backgrounds and aesthetics.
+                    Design Logic: Use a conic gradient or radial gradient that spins or pulses.
+                    Added a dark drop-shadow to ensure visibility on pure white pages.
                 */}
-                
-                {/* 1. The Halo (Outer Glow) 
-                    Provides contrast against white pages. Pulsing slightly.
-                */}
-                <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-blue-400 via-indigo-400 to-purple-400 opacity-60 blur-md group-hover:opacity-80 group-hover:blur-lg transition-all duration-500 animate-pulse-slow"></div>
+                <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 opacity-20 blur-md group-hover:opacity-40 transition-opacity duration-500 animate-pulse-slow pointer-events-none"></div>
+                <div className="absolute -inset-1 rounded-full border border-blue-200/30 opacity-50 scale-110 pointer-events-none"></div>
 
-                {/* 2. The Crystal Body (Glassmorphism) 
-                    Semi-transparent, blurred backdrop, shiny borders.
-                */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/80 via-white/40 to-white/20 backdrop-blur-md shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.1)] border border-white/60 flex items-center justify-center overflow-hidden">
+                {/* --- Layer 2: The Crystal Body (Glass Orb) --- */}
+                <div 
+                    className="relative w-full h-full rounded-full overflow-hidden backdrop-blur-sm"
+                    style={{
+                        // Complex Glassmorphism Shadow Stack
+                        boxShadow: `
+                            inset -4px -4px 10px rgba(255,255,255,0.1),  /* Inner Rim Shadow */
+                            inset 4px 4px 10px rgba(255,255,255,0.8),    /* Top Left Highlight */
+                            0 8px 20px rgba(0,0,0,0.15),                 /* Deep Drop Shadow for Contrast */
+                            0 2px 4px rgba(0,0,0,0.1)                    /* Subtle Rim Shadow */
+                        `,
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 50%, rgba(230,240,255,0.6) 100%)'
+                    }}
+                >
+                    {/* Layer 2.1: Specular Highlight (The "Glossy" look) */}
+                    <div className="absolute top-[10%] left-[15%] w-[40%] h-[20%] bg-gradient-to-b from-white to-transparent opacity-90 rounded-full rotate-[-45deg] blur-[1px] pointer-events-none"></div>
                     
-                    {/* Glossy Reflection (Top Highlight) */}
-                    <div className="absolute top-0 left-2 right-2 h-1/2 bg-gradient-to-b from-white/80 to-transparent rounded-t-full opacity-70 pointer-events-none"></div>
-                    
-                    {/* Bottom Reflection (Ambient Light) */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-blue-100/30 to-transparent opacity-50 pointer-events-none"></div>
+                    {/* Layer 2.2: Bottom Caustic Reflection */}
+                    <div className="absolute bottom-0 right-0 w-full h-[60%] bg-gradient-to-t from-blue-300/30 to-transparent opacity-60 rounded-b-full pointer-events-none"></div>
 
-                    {/* 3. The Icon (Suspended inside) */}
-                    <div className={`relative z-10 transition-colors duration-300 drop-shadow-sm ${badgeCount > 0 ? 'text-blue-600' : 'text-slate-600'}`}>
-                        {badgeCount > 0 ? (
-                            <BookOpen className="w-7 h-7 stroke-[2.5px] fill-blue-50/50" />
-                        ) : (
-                            <Zap className="w-7 h-7 stroke-[2.5px] fill-amber-50/50 text-amber-500" />
-                        )}
+                    {/* --- Layer 3: The Suspended Icon --- */}
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                        {/* Icon Drop Shadow to simulate suspension inside the sphere */}
+                        <div className="relative filter drop-shadow-md transition-all duration-300 transform group-hover:rotate-12">
+                            {badgeCount > 0 ? (
+                                <BookOpen className="w-7 h-7 text-blue-600 fill-blue-50/20 stroke-[2.5px]" />
+                            ) : (
+                                <Zap className="w-7 h-7 text-slate-500 fill-slate-200/50 stroke-[2.5px] group-hover:text-amber-500 group-hover:fill-amber-100 transition-colors" />
+                            )}
+                        </div>
                     </div>
                 </div>
 
-                {/* 4. Notification Badge (Gemstone Style) */}
+                {/* --- Layer 4: Notification Badge (Gemstone) --- */}
                 {badgeCount > 0 && (
-                    <div className="absolute -top-1 -right-1 z-20 flex items-center justify-center">
-                        <span className="relative flex h-5 min-w-[20px] px-1.5 items-center justify-center">
-                            {/* Ping Animation */}
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            
-                            {/* Badge Body */}
-                            <span className="relative inline-flex rounded-full h-5 min-w-[20px] bg-gradient-to-r from-red-500 to-pink-600 border border-white/50 text-[10px] font-bold text-white items-center justify-center shadow-md leading-none px-1">
+                    <div className="absolute -top-1 -right-1 z-20">
+                        <div className="relative flex h-5 min-w-[20px] px-1.5 items-center justify-center">
+                            <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping"></span>
+                            <span 
+                                className="relative inline-flex rounded-full h-5 min-w-[20px] px-1 bg-gradient-to-br from-red-500 to-rose-600 text-[10px] font-bold text-white items-center justify-center leading-none border border-white/50 shadow-sm"
+                                style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
+                            >
                                 {badgeCount > 99 ? '99+' : badgeCount}
                             </span>
-                        </span>
+                        </div>
                     </div>
                 )}
             </div>
