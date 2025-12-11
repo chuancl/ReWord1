@@ -244,6 +244,7 @@ export interface WordInteractionConfig {
 
   dismissDelay: number; // ms to wait before hiding bubble
   allowMultipleBubbles: boolean; // if true, new bubbles don't close old ones
+  onlineDictUrl?: string; // New: URL template for online dictionary link
 }
 
 export type PopupCardField = 'context' | 'mixed' | 'dictExample';

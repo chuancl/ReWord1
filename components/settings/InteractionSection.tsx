@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { WordInteractionConfig, InteractionTrigger, ModifierKey, MouseAction, BubblePosition } from '../../types';
-import { Volume2, Info, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus } from 'lucide-react';
+import { Volume2, Info, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, ExternalLink } from 'lucide-react';
 import { playTextToSpeech } from '../../utils/audio';
 
 const Tooltip: React.FC<{ text: string; children: React.ReactNode }> = ({ text, children }) => {
@@ -338,6 +338,19 @@ export const InteractionSection: React.FC<InteractionSectionProps> = ({ config, 
                           </div>
                       </div>
                   </div>
+
+                  {/* Online Dict Link Config */}
+                  <div className="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">在线词典链接 (URL Template)</label>
+                      <input 
+                          type="text" 
+                          value={config.onlineDictUrl || ''} 
+                          onChange={(e) => setConfig({...config, onlineDictUrl: e.target.value})}
+                          placeholder="例如: https://dict.youdao.com/result?word={word}"
+                          className="w-full text-sm border-slate-300 rounded-lg focus:ring-blue-500 mb-1"
+                      />
+                      <p className="text-[10px] text-slate-400">配置后，气泡底部将显示跳转链接。使用 <code className="bg-slate-200 px-1 rounded text-slate-600">{`{word}`}</code> 作为单词占位符。</p>
+                  </div>
               </div>
            </div>
 
@@ -416,6 +429,22 @@ export const InteractionSection: React.FC<InteractionSectionProps> = ({ config, 
                             {config.showDictExample && (
                                 <div className="text-xs text-slate-600 italic border-l-2 border-blue-400 pl-3 py-0.5 leading-relaxed cursor-pointer hover:text-blue-600" onClick={() => playTextToSpeech("Her success was ephemeral", config.autoPronounceAccent)}>
                                     Her success was ephemeral.
+                                </div>
+                            )}
+
+                            {/* Online Dict Link (Preview) */}
+                            {config.onlineDictUrl && (
+                                <div className="mt-3 pt-3 border-t border-slate-100 text-[11px]">
+                                    <a 
+                                        href={config.onlineDictUrl.replace('{word}', 'ephemeral')} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="flex items-center text-slate-500 hover:text-blue-600 transition-colors"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <ExternalLink className="w-3 h-3 mr-1.5" />
+                                        查看在线词典详情
+                                    </a>
                                 </div>
                             )}
                         </div>

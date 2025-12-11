@@ -123,6 +123,7 @@ export const DEFAULT_WORD_INTERACTION: WordInteractionConfig = {
   autoPronounceCount: 1,
   dismissDelay: 300,
   allowMultipleBubbles: false,
+  onlineDictUrl: '', // Default empty
 };
 
 export const DEFAULT_PAGE_WIDGET: PageWidgetConfig = {

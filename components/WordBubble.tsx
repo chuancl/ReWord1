@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { WordEntry, WordInteractionConfig, WordCategory } from '../types';
-import { Volume2, Plus, Check } from 'lucide-react';
+import { Volume2, Plus, Check, ExternalLink } from 'lucide-react';
 import { playWordAudio, playSentenceAudio, stopAudio } from '../utils/audio';
 
 interface WordBubbleProps {
@@ -142,6 +142,13 @@ export const WordBubble: React.FC<WordBubbleProps> = ({
   const meaningStyle: React.CSSProperties = { fontSize: '14px', fontWeight: '500', color: '#334155', marginBottom: '12px', lineHeight: '1.4' };
   const originalBoxStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', fontSize: '12px', backgroundColor: '#f8fafc', padding: '6px 12px', borderRadius: '6px', marginBottom: '12px', border: '1px solid #f1f5f9', color: '#334155' };
   const exampleStyle: React.CSSProperties = { fontSize: '12px', fontStyle: 'italic', color: '#475569', borderLeft: '3px solid #60a5fa', paddingLeft: '12px', marginTop: '4px', lineHeight: '1.5', cursor: 'pointer' };
+  
+  // Link styles
+  const linkContainerStyle: React.CSSProperties = { marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #f1f5f9', fontSize: '11px', lineHeight: '1.4' };
+  const linkStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', color: '#64748b', textDecoration: 'none', transition: 'color 0.2s' };
+
+  // Resolve Dictionary URL
+  const dictUrl = config.onlineDictUrl ? config.onlineDictUrl.replace(/{word}/g, entry.text) : '';
 
   return (
     <div ref={bubbleRef} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} style={containerStyle}>
@@ -163,6 +170,23 @@ export const WordBubble: React.FC<WordBubbleProps> = ({
         {config.showDictExample && entry.dictionaryExample && (
             <div style={exampleStyle} onClick={() => playSentence(entry.dictionaryExample!)} title="点击朗读例句">
                 {entry.dictionaryExample}
+            </div>
+        )}
+        
+        {dictUrl && (
+            <div style={linkContainerStyle}>
+                <a 
+                    href={dictUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    style={linkStyle}
+                    onClick={(e) => { e.stopPropagation(); }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = '#3b82f6'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; }}
+                >
+                    <ExternalLink size={12} style={{ marginRight: '4px' }} />
+                    查看在线词典详情
+                </a>
             </div>
         )}
     </div>
