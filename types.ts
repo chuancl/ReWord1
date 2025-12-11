@@ -319,5 +319,5 @@ export interface MergeStrategyConfig {
   exampleOrder: { id: string, label: string, enabled: boolean }[];
 }
 
-export type AppView = 'dashboard' | 'words' | 'settings';
+export type AppView = 'dashboard' | 'words' | 'settings' | 'word-detail';
 export type SettingSectionId = 'general' | 'visual-styles' | 'scenarios' | 'word-bubble' | 'page-widget' | 'engines' | 'preview' | 'anki';

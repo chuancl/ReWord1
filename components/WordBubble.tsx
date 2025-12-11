@@ -1,8 +1,9 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { WordEntry, WordInteractionConfig, WordCategory } from '../types';
-import { Volume2, Plus, Check, ExternalLink } from 'lucide-react';
+import { Volume2, Plus, Check, ExternalLink, BookOpen } from 'lucide-react';
 import { playWordAudio, playSentenceAudio, stopAudio } from '../utils/audio';
+import { browser } from 'wxt/browser';
 
 interface WordBubbleProps {
   entry: WordEntry | null;
@@ -81,6 +82,13 @@ export const WordBubble: React.FC<WordBubbleProps> = ({
      playSentenceAudio(text, undefined, config.autoPronounceAccent, ttsSpeed);
   };
 
+  const openDetail = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!entry) return;
+      const url = browser.runtime.getURL(`/options.html?view=word-detail&word=${encodeURIComponent(entry.text)}`);
+      window.open(url, '_blank');
+  };
+
   // Position calculation logic remains the same...
   useEffect(() => {
     if (isVisible && targetRect && bubbleRef.current) {
@@ -144,8 +152,8 @@ export const WordBubble: React.FC<WordBubbleProps> = ({
   const exampleStyle: React.CSSProperties = { fontSize: '12px', fontStyle: 'italic', color: '#475569', borderLeft: '3px solid #60a5fa', paddingLeft: '12px', marginTop: '4px', lineHeight: '1.5', cursor: 'pointer' };
   
   // Link styles
-  const linkContainerStyle: React.CSSProperties = { marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #f1f5f9', fontSize: '11px', lineHeight: '1.4' };
-  const linkStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', color: '#64748b', textDecoration: 'none', transition: 'color 0.2s' };
+  const linkContainerStyle: React.CSSProperties = { marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #f1f5f9', fontSize: '11px', lineHeight: '1.4', display: 'flex', gap: '12px' };
+  const linkStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', color: '#64748b', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' };
 
   // Resolve Dictionary URL
   const dictUrl = config.onlineDictUrl ? config.onlineDictUrl.replace(/{word}/g, entry.text) : '';
@@ -173,8 +181,19 @@ export const WordBubble: React.FC<WordBubbleProps> = ({
             </div>
         )}
         
-        {dictUrl && (
-            <div style={linkContainerStyle}>
+        <div style={linkContainerStyle}>
+            <div 
+                style={linkStyle}
+                onClick={openDetail}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#3b82f6'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; }}
+                title="查看详细释义、词源、例句等"
+            >
+                <BookOpen size={12} style={{ marginRight: '4px' }} />
+                详细信息
+            </div>
+
+            {dictUrl && (
                 <a 
                     href={dictUrl} 
                     target="_blank" 
@@ -185,10 +204,10 @@ export const WordBubble: React.FC<WordBubbleProps> = ({
                     onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; }}
                 >
                     <ExternalLink size={12} style={{ marginRight: '4px' }} />
-                    查看在线词典详情
+                    在线词典
                 </a>
-            </div>
-        )}
+            )}
+        </div>
     </div>
   );
 };

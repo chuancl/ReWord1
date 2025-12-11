@@ -96,10 +96,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, onS
       </nav>
 
       <div className="p-4 border-t border-slate-800">
-        <div className="flex items-center text-xs text-slate-500 mb-2">
-          <span>当前状态:</span>
-          <span className="ml-auto text-emerald-400">运行中</span>
-        </div>
+        {currentView === 'word-detail' ? (
+            <div className="text-center text-xs text-slate-500 mb-2 bg-slate-800 rounded p-2 border border-slate-700">
+               正在查看单词详情
+            </div>
+        ) : (
+            <div className="flex items-center text-xs text-slate-500 mb-2">
+                <span>当前状态:</span>
+                <span className="ml-auto text-emerald-400">运行中</span>
+            </div>
+        )}
         <div className="w-full bg-slate-800 rounded-full h-1.5 mb-1">
            <div className="bg-emerald-500 h-1.5 rounded-full" style={{width: '100%'}}></div>
         </div>

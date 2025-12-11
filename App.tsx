@@ -1,11 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
 import { WordManager } from './components/WordManager';
 import { VisualStylesSection } from './components/StyleEditor';
 import { ScenariosSection, EnginesSection, InteractionSection, AnkiSection, PageWidgetSection, GeneralSection } from './components/Settings';
-import { PreviewSection } from './components/settings/PreviewSection'; // Import standalone Preview
+import { PreviewSection } from './components/settings/PreviewSection'; 
+import { WordDetail } from './components/WordDetail'; // Import new component
 import { Loader2 } from 'lucide-react';
 import { AppView, SettingSectionId, Scenario, WordEntry, PageWidgetConfig, WordInteractionConfig, TranslationEngine, AnkiConfig, AutoTranslateConfig, StyleConfig, WordCategory, OriginalTextConfig, DictionaryEngine } from './types';
 import { DEFAULT_STYLES, DEFAULT_ORIGINAL_TEXT_CONFIG, DEFAULT_WORD_INTERACTION, DEFAULT_PAGE_WIDGET, INITIAL_ENGINES, DEFAULT_ANKI_CONFIG, DEFAULT_AUTO_TRANSLATE, INITIAL_SCENARIOS, INITIAL_DICTIONARIES } from './constants';
@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [activeSettingSection, setActiveSettingSection] = useState<SettingSectionId | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [detailWord, setDetailWord] = useState<string>(''); // For word-detail view
   
   // --- Persistent State from Storage ---
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
@@ -31,7 +32,18 @@ const App: React.FC = () => {
 
   // Load data on mount
   useEffect(() => {
-    preloadVoices(); // Preload voices for preview
+    preloadVoices(); 
+    
+    // Check URL params for routing (e.g., from Word Bubble)
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view');
+    const wordParam = params.get('word');
+
+    if (viewParam === 'word-detail' && wordParam) {
+        setDetailWord(wordParam);
+        setCurrentView('word-detail');
+    }
+
     const loadData = async () => {
       await seedInitialData();
       
@@ -63,19 +75,15 @@ const App: React.FC = () => {
       ]);
       
       // Data Migration: Anki Config
-      // Ensure new deck name fields exist if user is upgrading from older version
       let finalAnkiConfig = ank;
       if (!finalAnkiConfig.deckNameWant || !finalAnkiConfig.deckNameLearning) {
           finalAnkiConfig = {
-              ...DEFAULT_ANKI_CONFIG, // Base on current defaults
-              ...ank, // Overlay existing user settings
-              // Ensure critical new fields are populated if missing in 'ank'
+              ...DEFAULT_ANKI_CONFIG, 
+              ...ank, 
               deckNameWant: ank.deckNameWant || DEFAULT_ANKI_CONFIG.deckNameWant,
               deckNameLearning: ank.deckNameLearning || DEFAULT_ANKI_CONFIG.deckNameLearning,
               syncScope: ank.syncScope || DEFAULT_ANKI_CONFIG.syncScope
           };
-          // Check for legacy 'deckName' field from previous versions and map it if appropriate
-          // casting to any to access potentially existing old property
           const oldDeckName = (ank as any).deckName;
           if (oldDeckName && !finalAnkiConfig.deckNameLearning) {
              finalAnkiConfig.deckNameLearning = oldDeckName;
@@ -96,10 +104,9 @@ const App: React.FC = () => {
     loadData();
   }, []);
 
-  // Auto-save with debounce
+  // Auto-save
   useEffect(() => {
     if (isLoading) return;
-
     const timer = setTimeout(() => {
         Promise.all([
             entriesStorage.setValue(entries),
@@ -114,7 +121,6 @@ const App: React.FC = () => {
             interactionConfigStorage.setValue(interactionConfig),
         ]).catch(err => console.error("Auto-save failed:", err));
     }, 800);
-
     return () => clearTimeout(timer);
   }, [entries, scenarios, pageWidgetConfig, autoTranslate, engines, dictionaries, ankiConfig, styles, originalTextConfig, interactionConfig, isLoading]);
 
@@ -133,6 +139,24 @@ const App: React.FC = () => {
 
   if (isLoading && entries.length === 0) {
     return <div className="h-screen w-full flex items-center justify-center bg-slate-50"><Loader2 className="w-8 h-8 text-blue-600 animate-spin"/></div>;
+  }
+
+  // Handle Full Screen Views (like Word Detail)
+  if (currentView === 'word-detail') {
+      return (
+          <WordDetail 
+             word={detailWord} 
+             onBack={() => {
+                 // If opened via URL (new tab), closing might be better or going to dashboard
+                 if (window.history.length > 1) {
+                     setCurrentView('dashboard');
+                 } else {
+                     // If it's a standalone tab opened by bubble, allow "Back" to go to dashboard too
+                     setCurrentView('dashboard');
+                 }
+             }} 
+          />
+      );
   }
 
   return (
