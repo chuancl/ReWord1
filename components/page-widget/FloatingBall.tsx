@@ -28,7 +28,6 @@ export const FloatingBall: React.FC<FloatingBallProps> = ({ config, badgeCount, 
             <div className={`relative w-16 h-16 flex items-center justify-center transition-transform duration-300 ease-out ${isDragging ? 'scale-90 cursor-grabbing' : 'hover:scale-110 animate-float'}`}>
                 
                 {/* --- Layer 0: Magic Energy Halo (Rotating Outer Ring) --- */}
-                {/* Expanded radius and complex gradient for mystical aura */}
                 <div className="absolute -inset-4 rounded-full opacity-50 blur-lg animate-spin-slow pointer-events-none"
                      style={{
                          background: 'conic-gradient(from 0deg, transparent 0%, rgba(59, 130, 246, 0.2) 25%, rgba(168, 85, 247, 0.4) 50%, rgba(59, 130, 246, 0.2) 75%, transparent 100%)'
@@ -63,11 +62,11 @@ export const FloatingBall: React.FC<FloatingBallProps> = ({ config, badgeCount, 
                     {/* 2.3 Rim Light / Caustics at Bottom (Refracted Light) */}
                     <div className="absolute bottom-[5%] right-[10%] w-[70%] h-[35%] bg-gradient-to-t from-cyan-400/40 via-blue-500/20 to-transparent opacity-80 rounded-full blur-[6px] rotate-[-20deg] pointer-events-none mix-blend-overlay"></div>
 
-                    {/* --- Layer 3: The Suspended Core Icon --- */}
+                    {/* --- Layer 3: The Suspended Core Icon (Cat Paw) --- */}
                     <div className="absolute inset-0 flex items-center justify-center z-20">
                         {/* Core Icon with SVG Glow Filter */}
                         <div className="relative transform transition-transform duration-500 group-hover:scale-110 filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]">
-                            <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
                                     <linearGradient id="core_gradient" x1="0" y1="0" x2="100" y2="100">
                                         <stop offset="0%" stopColor="#60a5fa" />    {/* Light Blue */}
@@ -80,18 +79,22 @@ export const FloatingBall: React.FC<FloatingBallProps> = ({ config, badgeCount, 
                                         <feComposite in="SourceGraphic" in2="blur" operator="over"/>
                                     </filter>
                                 </defs>
-                                {/* Fluid "W" Shape */}
+                                
+                                {/* Cat Paw - Toes */}
+                                <ellipse cx="18" cy="40" rx="9" ry="11" transform="rotate(-20 18 40)" fill="url(#core_gradient)" filter="url(#icon_glow)" />
+                                <ellipse cx="38" cy="25" rx="9" ry="11" transform="rotate(-10 38 25)" fill="url(#core_gradient)" filter="url(#icon_glow)" />
+                                <ellipse cx="62" cy="25" rx="9" ry="11" transform="rotate(10 62 25)" fill="url(#core_gradient)" filter="url(#icon_glow)" />
+                                <ellipse cx="82" cy="40" rx="9" ry="11" transform="rotate(20 82 40)" fill="url(#core_gradient)" filter="url(#icon_glow)" />
+
+                                {/* Cat Paw - Main Pad */}
                                 <path 
-                                    d="M 20 35 C 20 35, 30 85, 45 85 C 60 85, 60 55, 60 55 C 60 55, 65 85, 80 85 C 95 85, 90 35, 90 35"
-                                    stroke="url(#core_gradient)" 
-                                    strokeWidth="14"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="opacity-95"
+                                    d="M 28 62 Q 50 48 72 62 Q 82 78 65 88 Q 50 82 35 88 Q 18 78 28 62 Z"
+                                    fill="url(#core_gradient)"
                                     filter="url(#icon_glow)"
                                 />
+
                                 {badgeCount > 0 && (
-                                    <circle cx="85" cy="20" r="8" fill="#f43f5e" className="animate-ping" style={{ animationDuration: '2s' }} />
+                                    <circle cx="88" cy="20" r="8" fill="#f43f5e" className="animate-ping" style={{ animationDuration: '2s' }} />
                                 )}
                             </svg>
                         </div>
